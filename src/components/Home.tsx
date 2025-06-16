@@ -1,5 +1,9 @@
 function Home() {
-    return null;
+    return (
+        <div>
+            <h1>Welcome to Ed2gether</h1>
+        </div>
+    );
 }
 
 export default Home;
