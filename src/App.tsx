@@ -1,13 +1,24 @@
-import Login from './components/login'; 
-import Register from './components/register';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import Navbar from './components/NavBar'
+import Home from './components/Home'
+import Login from './components/Login'
+import Register from './components/Register'
+import EduMeet from './components/EduMeet'
+import EduToon from './components/EduToon'
 
 function App() {
   return (
-    <div>
-      <Register />
-      <Login />
-    </div>
-  );
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/edumeet" element={<EduMeet />} />
+        <Route path="/edutoon" element={<EduToon />} />
+      </Routes>
+    </Router>
+  )
 }
 
-export default App;
+export default App

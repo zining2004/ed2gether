@@ -1,34 +1,39 @@
-import { useState } from 'react'
-import { supabase } from '../utils/supabase'
+import { useState } from 'react';
+import { supabase } from '../utils/supabase';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [message, setMessage] = useState('')
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     const { data, error } = await supabase
       .from('users')
       .select('*')
-      .eq('username', username)
-      .eq('password', password)
-    
-    console.log('Username entered:', username)
-    console.log('Password entered:', password)
-    console.log('Query result:', data)
-    console.log('Query error:', error)
+      .eq('username', username.trim())
+      .eq('password', password.trim());
 
     if (error) {
-      setMessage(`Error: ${error.message}`)
-    } else if (data.length === 0) {
-      setMessage('Invalid username or password')
+      setMessage(`Error: ${error.message}`);
+    } else if (!data || data.length === 0) {
+      setMessage('Invalid username or password');
     } else {
-      setMessage(`Welcome, ${data[0].username}!`)
-      console.log('Logged in user:', data[0])
+      setMessage(`Welcome, ${data[0].username}!`);
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('username', data[0].username);
+
+      navigate('/');
+      window.location.reload()
     }
-  }
+  };
+
+  const goToRegister = () => {
+    navigate('/register');
+  };
 
   return (
     <div>
@@ -38,21 +43,24 @@ function Login() {
           type="text"
           placeholder="Username"
           value={username}
-          onChange={e => setUsername(e.target.value)}
+          onChange={(e) => setUsername(e.target.value)}
           required
         />
         <input
           type="password"
           placeholder="Password"
           value={password}
-          onChange={e => setPassword(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
           required
         />
         <button type="submit">Login</button>
       </form>
       {message && <p>{message}</p>}
+        <p>
+            Don't have an account? <button onClick={goToRegister}>Register</button>
+        </p>
     </div>
-  )
+  );
 }
 
-export default Login
+export default Login;
