@@ -1,0 +1,47 @@
+
+.loggedin {
+    display: flex;
+    gap: 20px;
+    padding: 10px;
+    font-size: 20px;
+    text-decoration: none;
+    font-family: 'Ahkio', sans-serif;
+}
+
+.navLinks a,
+.loggedout a {
+    padding: 15px;
+    text-decoration: none;
+    color: black;
+}
+
+.loggedin button,
+.loggedout {
+    margin-left: auto;
+    margin-right: 30px;
+    justify-content: flex-end;
+    background-color: transparent;
+    border: none;
+    font-size: 18px;
+    font-family: 'Ahkio', sans-serif;
+}
+
+.loggedout {
+    display: flex;
+    gap: 20px;
+    padding: 10px;
+}
+
+@font-face {
+    font-family: 'Ahkio';
+    src: url('/fonts/Ahkio-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.navLinks a:hover,
+.loggedin button:hover,
+.loggedout a:hover {
+    color: rgb(240, 158, 41);
+}
+

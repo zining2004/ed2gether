@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
+import styles from '../styles/NavBar.module.css'; 
 
 function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -16,20 +17,24 @@ function Navbar() {
   }
 
   return (
-    <nav style={{ display: 'flex', gap: '20px', padding: '10px' }}>
-      <a href="/">Home</a>
-      <a href="/edumeet">EduMeet</a>
-      <a href="/edutoon">EduToon</a>
+    <nav>
 
       {isLoggedIn ? (
+        <div className={styles.loggedin}>
+            <div className={styles.navLinks}>
+                <a href="/">Home</a>
+                <a href="/edumeet">EduMeet</a>
+                <a href="/edutoon">EduToon</a>
+            </div>
         <button onClick={handleLogout}>Logout</button>
+        </div>
       ) : (
-        <>
+        <div className={styles.loggedout}>
           <a href="/login">Login</a>
-        </>
+        </div>
       )}
     </nav>
   )
 }
 
-export default Navbar
+export default Navbar;
