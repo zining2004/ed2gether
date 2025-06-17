@@ -35,7 +35,6 @@ def upload():
             all_text += text + "\n"
 
     summary_raw = summaryfunction(all_text)
-    summary = markdown.markdown(summary_raw)
 
     video_path = videofunction(summary_raw)
     script = audiofunction(summary_raw)
@@ -43,7 +42,7 @@ def upload():
 
     # Send results to React
     return jsonify({
-        'summary': summary,
+        'summary': summary_raw,
         'videoPath': video_path,
         'audioPath': '/static/output.mp3',
     })

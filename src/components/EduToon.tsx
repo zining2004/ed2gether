@@ -72,9 +72,9 @@ function EduToon() {
       {/* Summary Section */}
       <section className={styles.summarySection}>
         <h2>📝 Summary</h2>
-        <div>
+        <ReactMarkdown>
             {summary || 'No summary generated yet.'}
-        </div>
+        </ReactMarkdown>
       </section>
 
 
