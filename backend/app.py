@@ -35,7 +35,8 @@ def upload():
             all_text += text + "\n"
 
     summary_raw = summaryfunction(all_text)
-    summary = markdown.markdown(summary_raw)
+    summary = summary_raw
+    print(f"Summary generated: {summary}")
 
     video_path = videofunction(summary_raw)
     script = audiofunction(summary_raw)
@@ -52,7 +53,6 @@ def upload():
 def summaryfunction(text):
     try:
         prompt = f"Summarize the following text:\n{text}"
-        print(f"Summary prompt: {prompt}")
         response = model.generate_content(prompt)
         return response.text
     except Exception as e:

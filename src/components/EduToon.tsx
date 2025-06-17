@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../styles/EduToon.module.css';
+import ReactMarkdown from 'react-markdown';
 
 function EduToon() {
   const [summary, setSummary] = useState('')
@@ -72,8 +73,11 @@ function EduToon() {
       <section className={styles.summarySection}>
         <h2>📝 Summary</h2>
         <div>
-            {summary || 'No summary generated yet.'}
-        </div>
+        {summary ? (
+      <ReactMarkdown>{summary}</ReactMarkdown>
+    ) : (
+      'No summary generated yet.'
+    )}        </div>
       </section>
 
       {/* Video Output */}
