@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import styles from '../styles/EduMeet.module.css';
 
 const ICE_CONFIG = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
 
@@ -167,8 +168,8 @@ const EduMeet: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>EduMeet</h2>
+    <div className={styles.container}>
+      <div className={styles.room}>
       <input
         type="text"
         placeholder="Enter room ID"
@@ -176,7 +177,8 @@ const EduMeet: React.FC = () => {
         onChange={(e) => setRoomId(e.target.value)}
       />
       <button onClick={joinRoom}>Join Room</button>
-      <div style={{ marginTop: 10 }}>
+      </div>
+      <div className={styles.buttons}>
         <button onClick={startCall}>Start Call</button>
         <button onClick={endCall}>End Call</button>
         <button onClick={toggleMute}>Mute/Unmute</button>
@@ -185,31 +187,30 @@ const EduMeet: React.FC = () => {
           {isTranscribing ? 'Stop Transcription' : 'Start Transcription'}
         </button>
       </div>
-      <div style={{ display: 'flex', marginTop: 10 }}>
+      <div className={styles.videoContainer}>
         <video
           ref={localVideoRef}
           autoPlay
           playsInline
-          muted
-          style={{ width: '45%', marginRight: 10 }}
-        />
+          muted/>
         { !remoteStream && (
-          <div style={{ width: '45%', height: 200, background: '#eee', textAlign: 'center', lineHeight: '200px' }}>
-            Waiting for remote video…
+          <div className={styles.waiting}>
           </div>
         ) }
         <video
           ref={remoteVideoRef}
           autoPlay
-          playsInline
-          style={{ width: '45%', display: remoteStream ? 'block' : 'none' }}
-        />
+          playsInline/>
       </div>
-      <div style={{ marginTop: 10 }}>
-        <div
-          ref={chatBoxRef}
-          style={{ border: '1px solid #ccc', padding: 8, height: 150, overflowY: 'auto' }}
-        />
+      <div className={styles.transcriptContainer}>
+      <div ref={transcriptRef} className={styles.transcript}>
+        <em>No transcription yet.</em>
+      </div>
+      </div>
+      <div className={styles.chatContainer}>
+        <div className={styles.chatHeader}>
+            <h3>Chatbox</h3>
+        <div ref={chatBoxRef} />
         <input
           type="text"
           placeholder="Type message..."
@@ -221,18 +222,6 @@ const EduMeet: React.FC = () => {
           }}
         />
       </div>
-      <div
-        ref={transcriptRef}
-        style={{
-          border: '1px solid #666',
-          padding: 8,
-          marginTop: 10,
-          height: 100,
-          overflowY: 'auto',
-          fontStyle: 'italic',
-        }}
-      >
-        <em>No transcription yet.</em>
       </div>
     </div>
   );
