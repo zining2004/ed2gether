@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { supabase } from '../utils/supabase';
+import styles from '../styles/Register.module.css'; 
 
 function Register() {
   const [username, setUsername] = useState('');
@@ -30,7 +31,8 @@ function Register() {
   };
 
   return (
-    <div>
+    <div className={styles.registerBackground}>
+    <div className={styles.registerContainer}>
       <h1>Register</h1>
       <form onSubmit={handleSubmit}>
         <input
@@ -57,6 +59,7 @@ function Register() {
         <button type="submit">Register</button>
       </form>
       {message && <p>{message}</p>}
+    </div>
     </div>
   );
 }

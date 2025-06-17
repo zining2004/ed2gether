@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styles from '../styles/EduToon.module.css';
 
 function EduToon() {
   const [summary, setSummary] = useState('')
@@ -42,73 +43,62 @@ function EduToon() {
   
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 text-gray-800 font-sans p-10 space-y-8 overflow-y-auto">
+    <main className={styles.container}>
       {/* Upload Section */}
-      <section className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-        <h2 className="text-xl font-semibold mb-4">📤 Upload Your Document</h2>
-        <form onSubmit={handleUpload} className="flex flex-col sm:flex-row items-center gap-4">
+      <section className={styles.uploadSection}>
+        <h2>📤 Upload Your Document</h2>
+        <form onSubmit={handleUpload}>
           <input
             type="file"
             onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-            className="border border-gray-300 p-3 rounded-md w-full sm:w-auto"
-            required
-          />
-          <button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-md shadow-md transition"
-          >
+            required/>
+          <button type="submit">
             Generate 🎨
           </button>
         </form>
       </section>
 
       {/* Output Type Buttons */}
-      <div className="flex flex-wrap gap-4 mt-4 mb-8">
-        <button
-          type="button"
-          data-value="video"
-          className="output-btn bg-blue-500 text-white px-4 py-2 rounded-md shadow hover:bg-blue-600 active"
-        >
+      <div className={styles.outputButtons}>
+        <button type="button" data-value="video">
           🎥 Video
         </button>
-        <button
-          type="button"
-          data-value="comic"
-          className="output-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-md shadow hover:bg-gray-300"
-        >
+        <button type="button" data-value="comic">
           📚 Comic
         </button>
       </div>
 
       {/* Summary Section */}
-      <section className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-        <h2 className="text-xl font-semibold mb-4">📝 Summary</h2>
-        <div className="text-gray-700 leading-relaxed">{summary || 'No summary generated yet.'}</div>
+      <section className={styles.summarySection}>
+        <h2>📝 Summary</h2>
+        <div>
+            {summary || 'No summary generated yet.'}
+        </div>
       </section>
 
       {/* Video Output */}
-      <section className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-        <h2 className="text-xl font-semibold mb-4">🎬 Video Output</h2>
+      <section className={styles.videoSection}>
+        <h2>🎬 Video Output</h2>
         {videoPath ? (
-          <video controls className="w-full max-w-2xl mx-auto rounded-lg">
+          <video controls>
             <source src={videoPath} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         ) : (
-          <p className="text-center text-gray-500 italic">No video generated yet.</p>
+          <p>No video generated yet.</p>
         )}
       </section>
 
       {/* Audio Output */}
-      <section className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-        <h2 className="text-xl font-semibold mb-4">🔊 Audio Narration</h2>
+      <section className={styles.audioSection}>
+        <h2>🔊 Audio Narration</h2>
         {audioPath ? (
           <audio controls className="w-full">
             <source src={audioPath} type="audio/mpeg" />
             Your browser does not support the audio element.
           </audio>
         ) : (
-          <p className="text-center text-gray-500 italic">No audio narration available.</p>
+          <p>No audio narration available.</p>
         )}
       </section>
     </main>

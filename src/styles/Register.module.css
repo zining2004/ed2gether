@@ -1,0 +1,62 @@
+.registerContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    width: 500px;
+    height: 350px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-family: 'Ahkio', sans-serif;
+}
+
+.registerContainer form {
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+    gap: 10px;
+}
+
+.registerContainer input {
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+    width: 250px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc;
+}
+
+.registerBackground {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: translateY(100px);
+}
+
+@font-face {
+    font-family: 'Ahkio';
+    src: url('/fonts/Ahkio-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.registerContainer h1 {
+    color: rgb(240, 158, 41);
+}
+
+.registerContainer button {
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc;
+    background-color: rgb(240, 158, 41);
+    transform: translateY(10px);
+}
+
+.registerContainer button:hover {
+    background-color: rgb(205, 134, 35);
+    color: white;
+    cursor: pointer;
+}

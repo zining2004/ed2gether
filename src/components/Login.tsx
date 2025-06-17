@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { supabase } from '../utils/supabase';
 import { useNavigate } from 'react-router-dom';
+import styles from '../styles/Login.module.css'; 
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -36,7 +37,8 @@ function Login() {
   };
 
   return (
-    <div>
+    <div className={styles.loginBackground}>
+    <div className={styles.loginContainer}>
       <h1>Login</h1>
       <form onSubmit={handleLogin}>
         <input
@@ -56,9 +58,11 @@ function Login() {
         <button type="submit">Login</button>
       </form>
       {message && <p>{message}</p>}
-        <p>
-            Don't have an account? <button onClick={goToRegister}>Register</button>
-        </p>
+        <div className={styles.loginLinks}>
+        <p>Don't have an account? </p>
+        <button onClick={goToRegister}>Register</button>
+        </div>
+    </div>
     </div>
   );
 }

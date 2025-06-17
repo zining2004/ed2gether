@@ -1,0 +1,23 @@
+
+.container {
+    font-family: 'Ahkio', sans-serif;;
+}
+
+.summarySection {
+  margin-bottom: 2rem;
+}
+
+.videoSection {
+  margin-bottom: 2rem;
+}
+
+.audioSection {
+  margin-bottom: 2rem;
+}
+
+@font-face {
+    font-family: 'Ahkio';
+    src: url('/fonts/Ahkio-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
