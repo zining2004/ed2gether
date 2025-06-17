@@ -35,8 +35,7 @@ def upload():
             all_text += text + "\n"
 
     summary_raw = summaryfunction(all_text)
-    summary = summary_raw
-    print(f"Summary generated: {summary}")
+    summary = markdown.markdown(summary_raw)
 
     video_path = videofunction(summary_raw)
     script = audiofunction(summary_raw)

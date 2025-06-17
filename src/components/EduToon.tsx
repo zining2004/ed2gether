@@ -73,12 +73,10 @@ function EduToon() {
       <section className={styles.summarySection}>
         <h2>📝 Summary</h2>
         <div>
-        {summary ? (
-      <ReactMarkdown>{summary}</ReactMarkdown>
-    ) : (
-      'No summary generated yet.'
-    )}        </div>
+            {summary || 'No summary generated yet.'}
+        </div>
       </section>
+
 
       {/* Video Output */}
       <section className={styles.videoSection}>
