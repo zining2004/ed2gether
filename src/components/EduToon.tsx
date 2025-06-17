@@ -71,10 +71,18 @@ function EduToon() {
       {/* Summary Section */}
       <section className={styles.summarySection}>
         <h2>📝 Summary</h2>
-        <div>
-            {summary || 'No summary generated yet.'}
+        <div className={styles.summaryContent}>
+          {summary ? (
+            <div
+              className={styles.summaryContent}
+              dangerouslySetInnerHTML={{ __html: summary }}
+            />
+          ) : (
+            'No summary generated yet.'
+          )}
         </div>
       </section>
+
 
       {/* Video Output */}
       <section className={styles.videoSection}>
