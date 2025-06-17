@@ -4,44 +4,43 @@ import styles from '../styles/EduToon.module.css';
 import ReactMarkdown from 'react-markdown';
 
 function EduToon() {
-  const [summary, setSummary] = useState('')
-  const [videoPath, setVideoPath] = useState('')
-  const [audioPath, setAudioPath] = useState('')
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [summary, setSummary] = useState('');
+  const [videoPaths, setVideoPaths] = useState<string[]>([]);
+  const [audioPath, setAudioPath] = useState('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     if (!isLoggedIn) {
-      navigate('/login')
+      navigate('/login');
     }
-  }, [navigate])
+  }, [navigate]);
 
   const handleUpload = async (e: React.FormEvent) => {
-    e.preventDefault()
-  
-    if (!selectedFile) return
-  
-    const formData = new FormData()
-    formData.append('document', selectedFile)
-    formData.append('username', localStorage.getItem('username') || 'guest')
-  
+    e.preventDefault();
+
+    if (!selectedFile) return;
+
+    const formData = new FormData();
+    formData.append('document', selectedFile);
+    formData.append('username', localStorage.getItem('username') || 'guest');
+
     try {
       const res = await fetch('http://localhost:5000/upload', {
         method: 'POST',
         body: formData,
-      })
-  
-      const result = await res.json()
-      setSummary(result.summary)
-      setVideoPath(`http://localhost:5000${result.videoPath}`)  
-      setAudioPath(`http://localhost:5000${result.audioPath}`)
+      });
+
+      const result = await res.json();
+      setSummary(result.summary);
+      setVideoPaths(result.videoPaths || []);
+      setAudioPath(`http://localhost:5000${result.audioPath}`);
     } catch (error) {
-      console.error('Upload failed:', error)
+      console.error('Upload failed:', error);
     }
-  }
-  
+  };
 
   return (
     <main className={styles.container}>
@@ -52,42 +51,38 @@ function EduToon() {
           <input
             type="file"
             onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-            required/>
-          <button type="submit">
-            Generate 🎨
-          </button>
+            required
+          />
+          <button type="submit">Generate 🎨</button>
         </form>
       </section>
 
       {/* Output Type Buttons */}
       <div className={styles.outputButtons}>
-        <button type="button" data-value="video">
-          🎥 Video
-        </button>
-        <button type="button" data-value="comic">
-          📚 Comic
-        </button>
+        <button type="button" data-value="video">🎥 Video</button>
+        <button type="button" data-value="comic">📚 Comic</button>
       </div>
 
       {/* Summary Section */}
       <section className={styles.summarySection}>
         <h2>📝 Summary</h2>
         <ReactMarkdown>
-            {summary || 'No summary generated yet.'}
+          {summary || 'No summary generated yet.'}
         </ReactMarkdown>
       </section>
 
-
-      {/* Video Output */}
+      {/* Video Outputs */}
       <section className={styles.videoSection}>
-        <h2>🎬 Video Output</h2>
-        {videoPath ? (
-          <video controls>
-            <source src={videoPath} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+        <h2>🎬 Video Outputs</h2>
+        {videoPaths.length > 0 ? (
+          videoPaths.map((path, index) => (
+            <video key={index} controls>
+              <source src={`http://localhost:5000${path}`} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          ))
         ) : (
-          <p>No video generated yet.</p>
+          <p>No videos generated yet.</p>
         )}
       </section>
 
@@ -104,7 +99,7 @@ function EduToon() {
         )}
       </section>
     </main>
-  )
+  );
 }
 
-export default EduToon
+export default EduToon;
