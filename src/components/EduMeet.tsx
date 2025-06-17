@@ -12,10 +12,11 @@ const EduMeet: React.FC = () => {
   const socketRef = useRef<WebSocket | null>(null);
 
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
-  const [remoteStream, setRemoteStream] = useState<MediaStream|null>(null);
+  const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const [roomId, setRoomId] = useState<string>('');
   const [isTranscribing, setIsTranscribing] = useState<boolean>(false);
 
+  // Initialize speech transcription
   useEffect(() => {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SR) return console.warn('Web Speech API not supported.');
@@ -34,6 +35,7 @@ const EduMeet: React.FC = () => {
     recognitionRef.current = rec;
   }, []);
 
+  // Join or create a room
   const joinRoom = async () => {
     if (!roomId.trim()) return;
     const ws = new WebSocket(`ws://localhost:8000/ws/${roomId.trim()}`);
@@ -49,17 +51,16 @@ const EduMeet: React.FC = () => {
       stream.getTracks().forEach((track) => pc.addTrack(track, stream));
 
       pc.ontrack = (event) => {
-        const stream = event.streams[0];
-        if (stream) {
-          setRemoteStream(stream);                // ← update your state
-          if (remoteVideoRef.current) {
-            remoteVideoRef.current.srcObject = stream;
-          }
+        const [incoming] = event.streams;
+        if (incoming) {
+          setRemoteStream(incoming);
+          if (remoteVideoRef.current) remoteVideoRef.current.srcObject = incoming;
         }
       };
-
       pc.onicecandidate = (event) => {
-        if (event.candidate) ws.send(JSON.stringify({ type: 'ice', candidate: event.candidate }));
+        if (event.candidate) {
+          ws.send(JSON.stringify({ type: 'ice', candidate: event.candidate }));
+        }
       };
     };
 
@@ -101,6 +102,7 @@ const EduMeet: React.FC = () => {
     };
   };
 
+  // Start the WebRTC call by sending an offer
   const startCall = async () => {
     const pc = pcRef.current;
     const ws = socketRef.current;
@@ -110,20 +112,48 @@ const EduMeet: React.FC = () => {
     ws.send(JSON.stringify({ type: 'offer', offer }));
   };
 
+  // End the call: close connections and cleanup
+  const endCall = () => {
+    // Close peer connection
+    if (pcRef.current) {
+      pcRef.current.getSenders().forEach((sender) => sender.track?.stop());
+      pcRef.current.close();
+      pcRef.current = null;
+    }
+    // Close socket
+    if (socketRef.current) {
+      socketRef.current.close();
+      socketRef.current = null;
+    }
+    // Stop local stream
+    if (localStream) {
+      localStream.getTracks().forEach((track) => track.stop());
+      setLocalStream(null);
+    }
+    // Clear remote stream
+    setRemoteStream(null);
+    // Clear video elements
+    if (localVideoRef.current) localVideoRef.current.srcObject = null;
+    if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null;
+  };
+
+  // Send chat message
   const sendChat = (message: string) => {
     socketRef.current?.send(JSON.stringify({ type: 'chat', message }));
   };
 
+  // Mute/unmute
   const toggleMute = () => {
     const track = localStream?.getAudioTracks()[0];
     if (track) track.enabled = !track.enabled;
   };
-
+  // Camera on/off
   const toggleCamera = () => {
     const track = localStream?.getVideoTracks()[0];
     if (track) track.enabled = !track.enabled;
   };
 
+  // Start/stop transcription
   const toggleTranscription = () => {
     const rec = recognitionRef.current;
     if (!rec) return;
@@ -148,6 +178,7 @@ const EduMeet: React.FC = () => {
       <button onClick={joinRoom}>Join Room</button>
       <div style={{ marginTop: 10 }}>
         <button onClick={startCall}>Start Call</button>
+        <button onClick={endCall}>End Call</button>
         <button onClick={toggleMute}>Mute/Unmute</button>
         <button onClick={toggleCamera}>Camera On/Off</button>
         <button onClick={toggleTranscription}>
@@ -162,14 +193,16 @@ const EduMeet: React.FC = () => {
           muted
           style={{ width: '45%', marginRight: 10 }}
         />
-        {!remoteStream && <div style={{ width:'45%', height:200, background:'#eee', textAlign:'center', lineHeight: '200px' }}>
-        Waiting for remote video…
-        </div>}
+        { !remoteStream && (
+          <div style={{ width: '45%', height: 200, background: '#eee', textAlign: 'center', lineHeight: '200px' }}>
+            Waiting for remote video…
+          </div>
+        ) }
         <video
-        ref={remoteVideoRef}
-        autoPlay
-        playsInline
-        style={{ width:'45%', display: remoteStream ? 'block' : 'none' }}
+          ref={remoteVideoRef}
+          autoPlay
+          playsInline
+          style={{ width: '45%', display: remoteStream ? 'block' : 'none' }}
         />
       </div>
       <div style={{ marginTop: 10 }}>
