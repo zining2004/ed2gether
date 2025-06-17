@@ -84,6 +84,7 @@ def visualize_prompt(point):
         prompt = (
             f"Describe the following educational concept purely in visual terms, with no text, labels, or narration. "
             f"Use objects, characters, settings, or scenes to convey the idea to a student audience:\n\n{point}"
+            f"limit the description to 1500 characters."
         )
         response = model.generate_content(prompt)
         return response.text.strip()
@@ -135,6 +136,98 @@ def generate_videos(key_points):
                 video_url = data["videos"][0]["video_url"]
                 video_data = requests.get(video_url)
                 path = "static/output_0.mp4"
+                with open(path, "wb") as f:
+                    f.write(video_data.content)
+                video_paths.append(f"/{path}")
+                print(f"[INFO] Saved video to {path}")
+                break
+            elif status in ["TASK_STATUS_FAILED", "TASK_STATUS_CANCELED"]:
+                print(f"[ERROR] Video generation failed: {status}")
+                break
+            else:
+                print(f"[INFO] Waiting for video (Attempt {attempt+1}/30)...")
+                time.sleep(5)
+
+    except Exception as e:
+        print(f"[ERROR] Video generation failed: {e}")
+
+    point = key_points[1]
+    try:
+        visual_description = visualize_prompt(point)
+        print(f"\n[VISUAL PROMPT 2]\n{visual_description}\n")
+
+        payload = {
+            "prompt": f"A cinematic, animated 3D video visually explaining this concept with no text or narration: {visual_description}",
+            "width": 1280,
+            "height": 720,
+            "enable_safety_checker": True,
+            "fast_mode": True
+        }
+
+        print(f"[DEBUG] Requesting video for key point 2")
+        res = requests.post(url, json=payload, headers=headers)
+        if res.status_code != 200:
+            print(f"[ERROR] Failed to request video: {res.status_code} {res.text}")
+            return video_paths
+
+        task_id = res.json().get("task_id")
+        print(f"[INFO] Task ID: {task_id}")
+        result_url = f"https://api.novita.ai/v3/async/task-result?task_id={task_id}"
+
+        for attempt in range(30):
+            status_res = requests.get(result_url, headers=headers)
+            data = status_res.json()
+            status = data.get("task", {}).get("status")
+            if status == "TASK_STATUS_SUCCEED":
+                video_url = data["videos"][0]["video_url"]
+                video_data = requests.get(video_url)
+                path = "static/output_1.mp4"
+                with open(path, "wb") as f:
+                    f.write(video_data.content)
+                video_paths.append(f"/{path}")
+                print(f"[INFO] Saved video to {path}")
+                break
+            elif status in ["TASK_STATUS_FAILED", "TASK_STATUS_CANCELED"]:
+                print(f"[ERROR] Video generation failed: {status}")
+                break
+            else:
+                print(f"[INFO] Waiting for video (Attempt {attempt+1}/30)...")
+                time.sleep(5)
+
+    except Exception as e:
+        print(f"[ERROR] Video generation failed: {e}")
+
+    point = key_points[2]
+    try:
+        visual_description = visualize_prompt(point)
+        print(f"\n[VISUAL PROMPT 3]\n{visual_description}\n")
+
+        payload = {
+            "prompt": f"A cinematic, animated 3D video visually explaining this concept with no text or narration: {visual_description}",
+            "width": 1280,
+            "height": 720,
+            "enable_safety_checker": True,
+            "fast_mode": True
+        }
+
+        print(f"[DEBUG] Requesting video for key point 3")
+        res = requests.post(url, json=payload, headers=headers)
+        if res.status_code != 200:
+            print(f"[ERROR] Failed to request video: {res.status_code} {res.text}")
+            return video_paths
+
+        task_id = res.json().get("task_id")
+        print(f"[INFO] Task ID: {task_id}")
+        result_url = f"https://api.novita.ai/v3/async/task-result?task_id={task_id}"
+
+        for attempt in range(30):
+            status_res = requests.get(result_url, headers=headers)
+            data = status_res.json()
+            status = data.get("task", {}).get("status")
+            if status == "TASK_STATUS_SUCCEED":
+                video_url = data["videos"][0]["video_url"]
+                video_data = requests.get(video_url)
+                path = "static/output_2.mp4"
                 with open(path, "wb") as f:
                     f.write(video_data.content)
                 video_paths.append(f"/{path}")
