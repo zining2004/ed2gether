@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
-import styles from '../styles/EduMeet.module.css'
+import React, { useEffect, useRef, useState } from 'react';
+import styles from '../styles/EduMeet.module.css';
 
 const ICE_CONFIG = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
 
@@ -13,10 +13,11 @@ const EduMeet: React.FC = () => {
   const socketRef = useRef<WebSocket | null>(null);
 
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
-  const [remoteStream, setRemoteStream] = useState<MediaStream|null>(null);
+  const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const [roomId, setRoomId] = useState<string>('');
   const [isTranscribing, setIsTranscribing] = useState<boolean>(false);
 
+  // Initialize speech transcription
   useEffect(() => {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SR) return console.warn('Web Speech API not supported.');
@@ -35,6 +36,7 @@ const EduMeet: React.FC = () => {
     recognitionRef.current = rec;
   }, []);
 
+  // Join or create a room
   const joinRoom = async () => {
     if (!roomId.trim()) return;
     const ws = new WebSocket(`ws://localhost:8000/ws/${roomId.trim()}`);
@@ -50,13 +52,16 @@ const EduMeet: React.FC = () => {
       stream.getTracks().forEach((track) => pc.addTrack(track, stream));
 
       pc.ontrack = (event) => {
-        if (remoteVideoRef.current && event.streams[0]) {
-          remoteVideoRef.current.srcObject = event.streams[0];
+        const [incoming] = event.streams;
+        if (incoming) {
+          setRemoteStream(incoming);
+          if (remoteVideoRef.current) remoteVideoRef.current.srcObject = incoming;
         }
       };
-
       pc.onicecandidate = (event) => {
-        if (event.candidate) ws.send(JSON.stringify({ type: 'ice', candidate: event.candidate }));
+        if (event.candidate) {
+          ws.send(JSON.stringify({ type: 'ice', candidate: event.candidate }));
+        }
       };
     };
 
@@ -98,6 +103,7 @@ const EduMeet: React.FC = () => {
     };
   };
 
+  // Start the WebRTC call by sending an offer
   const startCall = async () => {
     const pc = pcRef.current;
     const ws = socketRef.current;
@@ -107,20 +113,48 @@ const EduMeet: React.FC = () => {
     ws.send(JSON.stringify({ type: 'offer', offer }));
   };
 
+  // End the call: close connections and cleanup
+  const endCall = () => {
+    // Close peer connection
+    if (pcRef.current) {
+      pcRef.current.getSenders().forEach((sender) => sender.track?.stop());
+      pcRef.current.close();
+      pcRef.current = null;
+    }
+    // Close socket
+    if (socketRef.current) {
+      socketRef.current.close();
+      socketRef.current = null;
+    }
+    // Stop local stream
+    if (localStream) {
+      localStream.getTracks().forEach((track) => track.stop());
+      setLocalStream(null);
+    }
+    // Clear remote stream
+    setRemoteStream(null);
+    // Clear video elements
+    if (localVideoRef.current) localVideoRef.current.srcObject = null;
+    if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null;
+  };
+
+  // Send chat message
   const sendChat = (message: string) => {
     socketRef.current?.send(JSON.stringify({ type: 'chat', message }));
   };
 
+  // Mute/unmute
   const toggleMute = () => {
     const track = localStream?.getAudioTracks()[0];
     if (track) track.enabled = !track.enabled;
   };
-
+  // Camera on/off
   const toggleCamera = () => {
     const track = localStream?.getVideoTracks()[0];
     if (track) track.enabled = !track.enabled;
   };
 
+  // Start/stop transcription
   const toggleTranscription = () => {
     const rec = recognitionRef.current;
     if (!rec) return;
@@ -134,7 +168,8 @@ const EduMeet: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className={styles.container}>
+      <div className={styles.room}>
       <input
         type="text"
         placeholder="Enter room ID"
@@ -142,37 +177,40 @@ const EduMeet: React.FC = () => {
         onChange={(e) => setRoomId(e.target.value)}
       />
       <button onClick={joinRoom}>Join Room</button>
-      <div style={{ marginTop: 10 }}>
+      </div>
+      <div className={styles.buttons}>
         <button onClick={startCall}>Start Call</button>
+        <button onClick={endCall}>End Call</button>
         <button onClick={toggleMute}>Mute/Unmute</button>
         <button onClick={toggleCamera}>Camera On/Off</button>
         <button onClick={toggleTranscription}>
           {isTranscribing ? 'Stop Transcription' : 'Start Transcription'}
         </button>
       </div>
-      <div style={{ display: 'flex', marginTop: 10 }}>
+      <div className={styles.videoContainer}>
         <video
           ref={localVideoRef}
           autoPlay
           playsInline
-          muted
-          style={{ width: '45%', marginRight: 10 }}
-        />
-        {!remoteStream && <div style={{ width:'45%', height:200, background:'#eee', textAlign:'center', lineHeight: '200px' }}>
-        Waiting for remote video…
-        </div>}
+          muted/>
+        { !remoteStream && (
+          <div className={styles.waiting}>
+          </div>
+        ) }
         <video
-        ref={remoteVideoRef}
-        autoPlay
-        playsInline
-        style={{ width:'45%', display: remoteStream ? 'block' : 'none' }}
-        />
+          ref={remoteVideoRef}
+          autoPlay
+          playsInline/>
       </div>
-      <div style={{ marginTop: 10 }}>
-        <div
-          ref={chatBoxRef}
-          style={{ border: '1px solid #ccc', padding: 8, height: 150, overflowY: 'auto' }}
-        />
+      <div className={styles.transcriptContainer}>
+      <div ref={transcriptRef} className={styles.transcript}>
+        <em>No transcription yet.</em>
+      </div>
+      </div>
+      <div className={styles.chatContainer}>
+        <div className={styles.chatHeader}>
+            <h3>Chatbox</h3>
+        <div ref={chatBoxRef} />
         <input
           type="text"
           placeholder="Type message..."
@@ -184,18 +222,6 @@ const EduMeet: React.FC = () => {
           }}
         />
       </div>
-      <div
-        ref={transcriptRef}
-        style={{
-          border: '1px solid #666',
-          padding: 8,
-          marginTop: 10,
-          height: 100,
-          overflowY: 'auto',
-          fontStyle: 'italic',
-        }}
-      >
-        <em>No transcription yet.</em>
       </div>
     </div>
   );

@@ -1,0 +1,121 @@
+@font-face {
+    font-family: 'Ahkio';
+    src: url('/fonts/Ahkio-Regular.ttf') format('truetype');
+}
+  
+.container {
+    font-family: 'Ahkio', sans-serif;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.buttons button {
+    padding: 10px 20px;
+    background-color: rgb(240, 158, 41);
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.buttons button:hover,
+.room button:hover {
+    background-color: rgb(205, 134, 35);
+}
+
+.room input {
+    padding: 10px;
+    width: 100px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc;
+    font-family: 'Ahkio', sans-serif;
+    margin-right: 10px;
+}
+
+.room {
+    margin-bottom: 20px;
+}
+
+.room button {
+    padding: 10px 20px;
+    background-color: rgb(240, 158, 41);
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.videoContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.videoContainer video {
+    width: 800px;
+    height: 450px;
+}
+
+.transcript {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    width: 70%;
+    text-align: center;
+}
+
+.transcriptContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.chatContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.chatContainer input {
+    width: 70%;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc;
+    font-family: 'Ahkio', sans-serif;
+    margin-bottom: 10px;
+}
+
+.chatHeader {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 90%;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    overflow: hidden;
+    background-color: white;
+    margin-bottom: 20px;
+}
+
+.waiting {
+    font-size: 24px;
+    color: rgb(240, 158, 41);
+    text-align: center;
+    margin-top: 20px;
+}
