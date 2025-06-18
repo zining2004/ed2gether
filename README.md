@@ -4,16 +4,22 @@
 git clone https://github.com/zining2004/ed2gether 
 ```
 2. change the directory
-` cd ed2gether `
-3. run the backends 
-` cd backend `
-` uvicorn server:app --reload `
-` python3 app.py `
-` cd sign-language-intepreter`
-` python app.py `
-4. run the frontend
-` cd ..`
-`npm run dev `
+```
+cd ed2gether
+```
+4. run the backends 
+```
+cd backend 
+uvicorn server:app --reload 
+python3 app.py 
+cd sign-language-intepreter
+python app.py
+```
+6. run the frontend
+```
+ cd ..
+npm run dev
+```
 
 #Future Improvements
 1. Multilingual Speech-to-Text Transcription
