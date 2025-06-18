@@ -17,15 +17,15 @@ python app.py
 ```
 6. run the frontend
 ```
- cd ..
+cd ..
 npm run dev
 ```
 
-#Future Improvements
+# Future Improvements
 1. Multilingual Speech-to-Text Transcription
 Enhance the transcription feature to support multiple spoken languages beyond English, such as Mandarin, Malay, Tamil, or Spanish. This would allow users from diverse linguistic backgrounds to access real-time captions in their native languages, increasing the platform’s accessibility for international classrooms and multilingual communities.
 2. Gesture-to-Speech Output
 Enable bidirectional communication by converting recognized signs into synthesized speech, supporting Deaf-to-hearing interactions.
 
 #Acknowledgements
-Sign language intepreter: https://github.com/laplaces42/sign-language-interpreter
+Sign Language Interpreter: https://github.com/laplaces42/sign-language-interpreter
