@@ -119,3 +119,14 @@
     text-align: center;
     margin-top: 20px;
 }
+
+.signContainer {
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px solid #ccc;
+  }
+  .signOutput {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  

@@ -9,6 +9,7 @@ const EduMeet: React.FC = () => {
   const chatBoxRef = useRef<HTMLDivElement>(null);
   const transcriptRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const signOutputRef = useRef<HTMLDivElement>(null);
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const socketRef = useRef<WebSocket | null>(null);
 
@@ -181,6 +182,25 @@ const EduMeet: React.FC = () => {
         }
       };
 
+      useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (isSigning) {
+          interval = setInterval(async () => {
+            try {
+              const res = await fetch('http://localhost:5001/sign-word');
+              const data = await res.json();
+              if (signOutputRef.current) {
+                signOutputRef.current.textContent = data.word || 'No sign detected';
+              }
+            } catch (err) {
+              console.error('Sign polling error:', err);
+            }
+          }, 1000); // Poll every second
+        }
+        return () => clearInterval(interval);
+      }, [isSigning]);
+      
+
   return (
     <div className={styles.container}>
       <div className={styles.room}>
@@ -223,6 +243,12 @@ const EduMeet: React.FC = () => {
       <div ref={transcriptRef} className={styles.transcript}>
         <em>No transcription yet.</em>
       </div>
+      </div>
+      <div className={styles.signContainer}>
+        <h3>Sign Interpretation:</h3>
+        <div ref={signOutputRef} className={styles.signOutput}>
+            <em>No sign detected.</em>
+        </div>
       </div>
       <div className={styles.chatContainer}>
         <div className={styles.chatHeader}>
