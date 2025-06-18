@@ -1,3 +1,25 @@
+## Features
+
+### EduMeet (Video Call Platform)
+- Real-Time Video Call Rooms
+
+- Live Speech-to-Text Transcription
+
+- Sign Language Interpretation 
+
+- Chat Panel
+
+### EduToon (AI-Powered Animated Explainer Tool)
+- Document Upload & Parsing
+
+- Extracts and summarizes key content using AI.
+
+- AI Text Summarization
+
+- Narration with Text-to-Speech (TTS)
+
+- Animated Video Generation
+
 ## How to Run it
 1. clone the repository
 ``` 
