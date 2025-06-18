@@ -16,6 +16,7 @@ const EduMeet: React.FC = () => {
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const [roomId, setRoomId] = useState<string>('');
   const [isTranscribing, setIsTranscribing] = useState<boolean>(false);
+  const [isSigning, setIsSigning] = useState<boolean>(false);
 
   // Initialize speech transcription
   useEffect(() => {
@@ -167,6 +168,19 @@ const EduMeet: React.FC = () => {
     }
   };
 
+    // Start/stop sign interpretation
+    const toggleSign = () => {
+        const rec = recognitionRef.current;
+        if (!rec) return;
+        if (isSigning) {
+          rec.stop();
+          setIsSigning(false);
+        } else {
+          rec.start();
+          setIsSigning(true);
+        }
+      };
+
   return (
     <div className={styles.container}>
       <div className={styles.room}>
@@ -185,6 +199,9 @@ const EduMeet: React.FC = () => {
         <button onClick={toggleCamera}>Camera On/Off</button>
         <button onClick={toggleTranscription}>
           {isTranscribing ? 'Stop Transcription' : 'Start Transcription'}
+        </button>
+        <button onClick={toggleSign}>
+          {isSigning ? 'Stop Sign Intepretation' : 'Start Sign Interpretation'}
         </button>
       </div>
       <div className={styles.videoContainer}>
